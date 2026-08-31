@@ -1,0 +1,231 @@
+/* =========================================================
+   LOGIN PAGE STYLING
+   Colors: Navy (#0f2d52), Gold (#D4AF37), White (#ffffff)
+   ========================================================= */
+
+:root {
+  --trip-navy: #0f2d52;
+  --trip-navy-dark: #091c33;
+  --trip-navy-light: #16406f;
+  --trip-gold: #D4AF37;
+  --trip-gold-hover: #b89628;
+  --trip-gold-glow: rgba(212, 175, 55, 0.25);
+  --trip-white: #ffffff;
+  --trip-bg: #f5f7fb;
+  --trip-border: #e2e8f0;
+}
+
+/* Wrapper: Centered on screen, covers full viewport */
+.login-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: var(--trip-navy-light);
+  background-image: 
+    radial-gradient(circle at 10% 15%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 85%, rgba(15, 45, 82, 0.08) 0%, transparent 45%);
+}
+
+/* Main Card */
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--trip-white);
+  border-radius: 20px;
+  border: 1px solid rgba(15, 45, 82, 0.08);
+  box-shadow: 0 20px 50px rgba(15, 45, 82, 0.12);
+  overflow: hidden;
+  animation: loginFadeIn 0.35s ease-out;
+}
+
+/* Card Header */
+.login-card-header {
+  background: linear-gradient(135deg, var(--trip-navy), var(--trip-navy-light));
+  padding: 36px 24px 28px;
+  text-align: center;
+  color: var(--trip-white);
+  position: relative;
+}
+
+.login-card-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--trip-gold), transparent);
+}
+
+.login-logo {
+  height: 52px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+}
+
+.login-card-header h3 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
+  color: var(--trip-white);
+}
+
+.login-card-header p {
+  font-size: 0.85rem;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Card Body */
+.login-card-body {
+  padding: 32px 28px 24px;
+}
+
+/* Input Icon Group Layout */
+.custom-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.custom-input-group .input-icon {
+  position: absolute;
+  left: 14px;
+  color: #8b95a5;
+  font-size: 1.1rem;
+  pointer-events: none;
+  transition: color 0.2s ease;
+  z-index: 5;
+}
+
+.custom-input-group .form-control {
+  min-height: 48px;
+  padding-left: 42px;
+  padding-right: 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--trip-border);
+  background-color: #f8fafc;
+  color: var(--trip-navy);
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+}
+
+.custom-input-group .form-control::placeholder {
+  color: #a0aec0;
+}
+
+.custom-input-group .form-control:hover {
+  border-color: #cbd5e1;
+  background-color: var(--trip-white);
+}
+
+.custom-input-group .form-control:focus {
+  background-color: var(--trip-white);
+  border-color: var(--trip-gold);
+  box-shadow: 0 0 0 3.5px var(--trip-gold-glow);
+}
+
+.custom-input-group:focus-within .input-icon {
+  color: var(--trip-navy);
+}
+
+/* Form Labels */
+.login-card-body .form-label {
+  color: var(--trip-navy);
+  font-size: 0.82rem;
+}
+
+/* Login Submit Button */
+.btn-trip-gold {
+  min-height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--trip-gold), var(--trip-gold-hover));
+  color: var(--trip-navy);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.28);
+  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+  cursor: pointer;
+}
+
+.btn-trip-gold:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dfbc45, var(--trip-gold));
+  color: var(--trip-navy);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(212, 175, 55, 0.4);
+}
+
+.btn-trip-gold:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-trip-gold:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+/* Alert Styling */
+.alert-danger {
+  background-color: #fff5f5;
+  border: 1px solid #fed7d7;
+  color: #c53030;
+}
+
+/* Entry Animation */
+@keyframes loginFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .login-wrapper {
+    padding: 12px;
+  }
+
+  .login-card {
+    border-radius: 16px;
+  }
+
+  .login-card-header {
+    padding: 28px 18px 22px;
+  }
+
+  .login-card-header h3 {
+    font-size: 1.3rem;
+  }
+
+  .login-card-body {
+    padding: 24px 18px 18px;
+  }
+
+  .custom-input-group .form-control {
+    min-height: 44px;
+    font-size: 0.88rem;
+  }
+
+  .btn-trip-gold {
+    min-height: 44px;
+    font-size: 0.9rem;
+  }
+}

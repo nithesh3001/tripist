@@ -1,0 +1,132 @@
+/* Custom Tripist Color Palette */
+:root {
+  --tripist-blue: #0076cf;
+  --tripist-border-blue: #c3e2f9;
+  --tripist-bg-soft: #f4fbff;
+  --tripist-text-dark: #0f172a;
+  --tripist-text-muted: #475569;
+}
+
+.tripist-container {
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+
+/* Headings */
+.tripist-main-heading {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--tripist-text-dark);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.tripist-sub-heading {
+  font-size: 0.9rem;
+  color: var(--tripist-text-muted);
+  line-height: 1.5;
+}
+
+/* Card Styling */
+.tripist-card {
+  border: 1.5px solid var(--tripist-border-blue) !important;
+  border-radius: 14px !important;
+  background-color: #ffffff;
+  padding: 18px 14px !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.tripist-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px -4px rgba(0, 118, 207, 0.12);
+}
+
+.tripist-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+}
+
+.tripist-icon {
+  font-size: 1.6rem;
+  color: var(--tripist-blue);
+}
+
+.tripist-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--tripist-text-dark);
+  margin-bottom: 6px;
+}
+
+.tripist-card-text {
+  font-size: 0.8rem;
+  color: var(--tripist-text-muted);
+  line-height: 1.45;
+  margin-bottom: 0;
+}
+
+/* Lower Section Content Styling */
+.tripist-content-block {
+  padding-top: 10px !important;
+}
+
+.tripist-section-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--tripist-text-dark);
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.tripist-sub-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--tripist-text-dark);
+  margin-bottom: 6px;
+}
+
+.tripist-paragraph {
+  font-size: 0.86rem;
+  color: #334155;
+  line-height: 1.6;
+}
+
+/* Mobile & Tablet Responsive Rules (Under 768px) */
+@media (max-width: 767.98px) {
+  .tripist-main-heading {
+    font-size: 1.35rem;
+  }
+
+  .tripist-sub-heading {
+    font-size: 0.82rem;
+  }
+
+  .tripist-section-title {
+    font-size: 1.15rem;
+  }
+
+  .tripist-sub-title {
+    font-size: 0.92rem;
+  }
+
+  .tripist-paragraph {
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .tripist-card {
+    border-radius: 12px !important;
+    padding: 14px 10px !important;
+  }
+
+  .tripist-icon-wrapper {
+    height: 38px;
+  }
+
+  .tripist-icon {
+    font-size: 1.35rem;
+  }
+}

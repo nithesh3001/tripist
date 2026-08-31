@@ -1,0 +1,185 @@
+.tripist-accreditation {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 54px 0 44px;
+  background: #ffffff;
+  border-top: 1px solid rgba(15, 45, 82, 0.08);
+}
+
+.tripist-accreditation-container {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.tripist-accreditation-heading {
+  max-width: 700px;
+  margin: 0 auto 32px;
+  text-align: center;
+}
+
+.tripist-accreditation-eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #d4af37;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.tripist-accreditation-heading h2 {
+  margin: 0 0 10px;
+  color: #0f2d52;
+  font-size: clamp(1.6rem, 3.2vw, 2.15rem);
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.tripist-accreditation-heading p {
+  max-width: 620px;
+  margin: 0 auto;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Marquee Mask */
+.tripist-logo-marquee {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+}
+
+.tripist-logo-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: 16px;
+  padding: 6px 0;
+}
+
+/* Row 1: Scrolling Left */
+.tripist-logo-track.scroll-left {
+  animation: scrollLeftMarquee 60s linear infinite;
+}
+
+/* Row 2: Scrolling Right */
+.tripist-logo-track.scroll-right {
+  animation: scrollRightMarquee 60s linear infinite;
+}
+
+@keyframes scrollLeftMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 8px));
+  }
+}
+
+@keyframes scrollRightMarquee {
+  from {
+    transform: translateX(calc(-50% - 8px));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Pause when hovering over the marquee track */
+.tripist-logo-marquee:hover .tripist-logo-track {
+  animation-play-state: paused;
+}
+
+/* Logo Card */
+.tripist-partner-logo {
+  position: relative;
+  flex: 0 0 160px;
+  height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border: 1px solid rgba(15, 45, 82, 0.08);
+  border-radius: 12px;
+  background: #fae880ad;
+  box-shadow: 0 2px 8px rgba(15, 45, 82, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.tripist-partner-logo:hover {
+  transform: translateY(-3px);
+  border-color: rgba(15, 45, 82, 0.2) !important;
+  box-shadow: 0 6px 16px rgba(15, 45, 82, 0.12);
+}
+
+.tripist-partner-logo img {
+  display: block;
+  max-width: 140px;
+  max-height: 75px;
+  object-fit: contain;
+  filter: none;
+  opacity: 1;
+  transition: transform 0.25s ease;
+}
+
+.tripist-partner-logo:hover img {
+  filter: none;
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+.tripist-partner-placeholder {
+  color: #0f2d52; /* Adjusted to dark navy for better contrast against the new white background */
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.tripist-accreditation-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tripist-accreditation-line {
+  width: 32px;
+  height: 1px;
+  background: rgba(212, 175, 55, 0.5);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 576px) {
+  .tripist-accreditation {
+    padding: 40px 0 32px;
+  }
+
+  .tripist-logo-track {
+    gap: 12px;
+  }
+
+  .tripist-partner-logo {
+    flex-basis: 140px;
+    height: 76px;
+    padding: 8px 10px;
+  }
+
+  .tripist-partner-logo img {
+    max-width: 110px;
+    max-height: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tripist-logo-track {
+    animation: none !important;
+  }
+}
