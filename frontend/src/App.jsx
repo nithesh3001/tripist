@@ -51,6 +51,9 @@ function App() {
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/Admin" element={<AdminPanel />} />
         <Route path="/destination-details" element={<DestinationDetails />} />
+        
+        {/* Fallback route for GitHub Pages root/unmatched paths */}
+        <Route path="*" element={<Home />} />
       </Routes>
 
       {!hideLayout && <Footer />}
