@@ -5,7 +5,7 @@
 // Vite
 const API_BASE =
   import.meta.env?.VITE_API_BASE_URL ||
-  "https://tripistapi.onrender.com/api";
+  "http://localhost:5000/api";
 
 const TOKEN_KEY = "tripist_admin_token";
 
