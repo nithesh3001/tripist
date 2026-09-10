@@ -67,6 +67,7 @@ export const EMPTY_PACKAGE = {
   name: "",
   price: "",
   image: "",
+  destinationId: "",
   destinationType: "Domestic",
   packageCategory: "Beach",
   country: "India",

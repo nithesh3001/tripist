@@ -21,6 +21,14 @@
   overflow: hidden;
 }
 
+/* Scrollable Table Wrapper Styles (Non-sticky headers) */
+.table-scroller-container {
+  max-height: 480px;
+  overflow-y: auto;
+  overflow-x: auto;
+  position: relative;
+}
+
 .btn-action-icon {
   width: 34px;
   height: 34px;
@@ -101,6 +109,7 @@
   justify-content: center;
   font-size: 18px;
 }
+
 
 .best-season-preview,
 .season-save-preview {

@@ -23,10 +23,7 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background-color: var(--trip-navy-light);
-  background-image: 
-    radial-gradient(circle at 10% 15%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 90% 85%, rgba(15, 45, 82, 0.08) 0%, transparent 45%);
+  background-color: var(--trip-navy-dark);
 }
 
 /* Main Card */

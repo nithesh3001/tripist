@@ -194,6 +194,65 @@
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
 }
 
+/* Container */
+.date-picker-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Text box display */
+.date-display-input {
+  width: 100%;
+  cursor: pointer !important;
+  user-select: none;
+  background-color: #fdfdfd !important;
+  padding-right: 46px; /* space so text doesn't hit the icon */
+}
+
+.date-display-input:focus {
+  outline: none;
+  border-color: var(--trip-gold);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+}
+
+/* Real native date input - kept active in DOM for showPicker() */
+.date-picker-hidden-native {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Calendar Button icon aligned on the right */
+.date-picker-calendar-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: none; /* Let container catch the click */
+  opacity: 0.85;
+}
+
+.date-picker-container:hover .date-picker-calendar-btn {
+  opacity: 1;
+}
+
 .form-select-custom {
   cursor: pointer;
   appearance: auto;

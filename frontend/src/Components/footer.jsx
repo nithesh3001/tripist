@@ -292,7 +292,7 @@ const Footer = () => {
           }}
         >
           <p className="mb-0 text-center text-md-start">
-            &copy; {new Date().getFullYear()} Tripist Holidays. All rights
+            &copy; {new Date().getFullYear()} Tripist Holidays Private Limited. All rights
             reserved.
           </p>
 

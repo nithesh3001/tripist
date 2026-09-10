@@ -14,6 +14,8 @@ import {
   RefreshCw,
   Loader2,
   BookmarkCheck,
+  Navigation,
+  ExternalLink,
 } from "lucide-react";
 import { api } from "../Admin/api";
 
@@ -22,6 +24,14 @@ import banner from "../assets/hero2.jpg";
 const Contact = () => {
   const [searchParams] = useSearchParams();
   const formRef = useRef(null);
+
+  // 📍 =======================================================
+  // COORDINATES & LOCATION CONFIGURATION
+  // =======================================================
+  const officeLatitude = 13.094381424554427;
+  const officeLongitude = 80.2059712647802;
+  const locationName = "Tripist Holidays Private Limited";
+  const mapZoom = 17;
 
   // Read URL query parameters from the ExplorePackages redirect
   const queryPackageId = searchParams.get("packageId");
@@ -48,10 +58,11 @@ const Contact = () => {
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dateInputRef = useRef(null);
 
   // Dynamic contact info matching database schema
   const [contactInfo, setContactInfo] = useState({
-    phone: "+91 96555 96867",
+    phone: "+91 88702 22526",
     email: "info@tripistholidays.com",
     website: "www.tripistholidays.com",
     address:
@@ -59,7 +70,8 @@ const Contact = () => {
   });
 
   useEffect(() => {
-    api.getContact()
+    api
+      .getContact()
       .then((data) => {
         if (data && !data.error && Object.keys(data).length > 0) {
           setContactInfo((prev) => ({
@@ -88,7 +100,10 @@ const Contact = () => {
       // Smooth scroll directly to the booking form
       if (formRef.current) {
         setTimeout(() => {
-          formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+          formRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }, 150);
       }
     }
@@ -144,7 +159,9 @@ const Contact = () => {
     }
     if (!formData.mobile.trim()) {
       tempErrors.mobile = "Mobile Number is required";
-    } else if (!/^[0-9+\s-]{10,15}$/.test(formData.mobile.replace(/\s+/g, ""))) {
+    } else if (
+      !/^[0-9+\s-]{10,15}$/.test(formData.mobile.replace(/\s+/g, ""))
+    ) {
       tempErrors.mobile = "Please enter a valid mobile number";
     }
     setErrors(tempErrors);
@@ -194,7 +211,11 @@ const Contact = () => {
     { day: "Thursday", hours: "9:00 AM – 6:00 PM" },
     { day: "Friday", hours: "9:00 AM – 6:00 PM" },
     { day: "Saturday", hours: "9:00 AM – 4:00 PM" },
-    { day: "Sunday", hours: "Closed (Online enquiries accepted)", isSpecial: true },
+    {
+      day: "Sunday",
+      hours: "Closed (Online enquiries accepted)",
+      isSpecial: true,
+    },
   ];
 
   const highlights = [
@@ -206,25 +227,31 @@ const Contact = () => {
     "Trusted Travel Partners",
   ];
 
+  // Direct route URL to Google Maps navigation
+  const googleDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${officeLatitude},${officeLongitude}&destination_place_id=${encodeURIComponent(
+    locationName,
+  )}`;
+
   return (
-    <div className="contact-page-wrapper ">
+    <div className="contact-page-wrapper">
       {/* Hero Section */}
       <section
         className="contact-hero"
         style={{ backgroundImage: `url(${banner})` }}
       >
-        <div className="contact-overlay ">
+        <div className="contact-overlay">
           <div className="container text-center text-md-start">
             <p className="section-tag">TRIPIST HOLIDAYS</p>
             <h1>We'd Love to Hear From You</h1>
             <p className="hero-desc">
-              Whether you're planning your next holiday, looking for a customized
-              travel package, seeking corporate travel solutions, or interested in
-              partnering with us, our team is here to assist you.
+              Whether you're planning your next holiday, looking for a
+              customized travel package, seeking corporate travel solutions, or
+              interested in partnering with us, our team is here to assist you.
             </p>
             <p className="hero-subdesc">
-              At Tripist Holidays, we are committed to providing prompt, reliable, and
-              personalized support to ensure every journey begins with confidence.
+              At Tripist Holidays, we are committed to providing prompt,
+              reliable, and personalized support to ensure every journey begins
+              with confidence.
             </p>
           </div>
         </div>
@@ -239,19 +266,24 @@ const Contact = () => {
               <div className="contact-info-column d-flex flex-column gap-4">
                 <div className="info-card shadow-sm p-4 rounded-4 bg-white">
                   <h3 className="card-heading-gold border-bottom pb-3 mb-4">
-                    <Compass className="icon-title-gold me-2 inline-block" size={24} />
+                    <Compass
+                      className="icon-title-gold me-2 inline-block"
+                      size={24}
+                    />
                     Get in Touch
                   </h3>
-                  
+
                   <div className="office-details mb-4">
                     <div className="d-flex align-items-start gap-3">
                       <div className="icon-container-accent">
                         <MapPin size={20} className="text-gold" />
                       </div>
                       <div>
-                        <h5 className="font-semibold text-trip mb-1">Registered Office</h5>
+                        <h5 className="font-semibold text-trip mb-1">
+                          Registered Office
+                        </h5>
                         <p className="office-title text-navy font-bold m-0">
-                          Tripist Holidays Private Limited
+                          {locationName}
                         </p>
                         <p
                           className="address-text text-muted mb-0 mt-1"
@@ -275,7 +307,9 @@ const Contact = () => {
                       </div>
                       <div>
                         <span className="small text-muted d-block">Phone</span>
-                        <span className="link-value font-bold text-trip">{contactInfo.phone}</span>
+                        <span className="link-value font-bold text-trip">
+                          {contactInfo.phone}
+                        </span>
                       </div>
                     </a>
 
@@ -288,7 +322,9 @@ const Contact = () => {
                       </div>
                       <div>
                         <span className="small text-muted d-block">Email</span>
-                        <span className="link-value font-bold text-trip">{contactInfo.email}</span>
+                        <span className="link-value font-bold text-trip">
+                          {contactInfo.email}
+                        </span>
                       </div>
                     </a>
 
@@ -306,8 +342,12 @@ const Contact = () => {
                         <Globe size={18} />
                       </div>
                       <div>
-                        <span className="small text-muted d-block">Website</span>
-                        <span className="link-value font-bold text-trip">{contactInfo.website}</span>
+                        <span className="small text-muted d-block">
+                          Website
+                        </span>
+                        <span className="link-value font-bold text-trip">
+                          {contactInfo.website}
+                        </span>
                       </div>
                     </a>
                   </div>
@@ -316,16 +356,28 @@ const Contact = () => {
                 {/* Business Hours */}
                 <div className="info-card shadow-sm p-4 rounded-4 bg-white">
                   <h3 className="card-heading-gold border-bottom pb-3 mb-4">
-                    <Clock className="icon-title-gold me-2 inline-block" size={24} />
+                    <Clock
+                      className="icon-title-gold me-2 inline-block"
+                      size={24}
+                    />
                     Business Hours
                   </h3>
                   <div className="table-responsive">
                     <table className="table table-borderless business-hours-table m-0">
                       <tbody>
                         {businessHours.map((item, index) => (
-                          <tr key={index} className={item.isSpecial ? "table-row-special" : ""}>
-                            <td className="day-name font-semibold text-trip py-2">{item.day}</td>
-                            <td className={`day-hours py-2 text-end ${item.isSpecial ? "text-gold font-bold" : "text-muted"}`}>
+                          <tr
+                            key={index}
+                            className={
+                              item.isSpecial ? "table-row-special" : ""
+                            }
+                          >
+                            <td className="day-name font-semibold text-trip py-2">
+                              {item.day}
+                            </td>
+                            <td
+                              className={`day-hours py-2 text-end ${item.isSpecial ? "text-gold font-bold" : "text-muted"}`}
+                            >
                               {item.hours}
                             </td>
                           </tr>
@@ -367,10 +419,17 @@ const Contact = () => {
 
                 {/* Notification Banner when package is selected */}
                 {queryPackageName && !submitted && (
-                  <div className="alert alert-warning border-0 d-flex align-items-center gap-2 mb-4 p-3 rounded-3 shadow-sm" style={{ background: "#fef9c3", color: "#854d0e" }}>
-                    <BookmarkCheck size={20} className="text-warning flex-shrink-0" />
+                  <div
+                    className="alert alert-warning border-0 d-flex align-items-center gap-2 mb-4 p-3 rounded-3 shadow-sm"
+                    style={{ background: "#fef9c3", color: "#854d0e" }}
+                  >
+                    <BookmarkCheck
+                      size={20}
+                      className="text-warning flex-shrink-0"
+                    />
                     <div>
-                      Booking enquiry for package: <strong>{queryPackageName}</strong>
+                      Booking enquiry for package:{" "}
+                      <strong>{queryPackageName}</strong>
                     </div>
                   </div>
                 )}
@@ -378,10 +437,12 @@ const Contact = () => {
                 {!submitted ? (
                   <>
                     <h2 className="text-trip mb-2">
-                      {queryPackageName ? "Complete Your Package Booking" : "Send Us an Enquiry"}
+                      {queryPackageName
+                        ? "Complete Your Package Booking"
+                        : "Send Us an Enquiry"}
                     </h2>
                     <p className="text-muted mb-4">
-                      {queryPackageName 
+                      {queryPackageName
                         ? "Please fill in your details below to confirm dates and receive a tailored quotation."
                         : "Whether you're planning a vacation or need travel assistance, simply fill out the enquiry form and we'll get back to you as soon as possible."}
                     </p>
@@ -395,7 +456,12 @@ const Contact = () => {
                       <div className="row g-4 mb-5">
                         <div className="col-12">
                           <div className="form-group-custom">
-                            <label htmlFor="fullName" className="required-label">Full Name</label>
+                            <label
+                              htmlFor="fullName"
+                              className="required-label"
+                            >
+                              Full Name
+                            </label>
                             <input
                               type="text"
                               id="fullName"
@@ -403,17 +469,23 @@ const Contact = () => {
                               value={formData.fullName}
                               onChange={handleInputChange}
                               className={`form-control-custom ${errors.fullName ? "is-invalid" : ""}`}
-                              placeholder="e.g. Nithesh Kumar"
+                              placeholder="Your Name"
                               autoComplete="name"
                               required
                             />
-                            {errors.fullName && <div className="invalid-feedback-custom">{errors.fullName}</div>}
+                            {errors.fullName && (
+                              <div className="invalid-feedback-custom">
+                                {errors.fullName}
+                              </div>
+                            )}
                           </div>
                         </div>
 
                         <div className="col-md-6">
                           <div className="form-group-custom">
-                            <label htmlFor="email" className="required-label">Email Address</label>
+                            <label htmlFor="email" className="required-label">
+                              Email Address
+                            </label>
                             <input
                               type="email"
                               id="email"
@@ -425,13 +497,19 @@ const Contact = () => {
                               autoComplete="email"
                               required
                             />
-                            {errors.email && <div className="invalid-feedback-custom">{errors.email}</div>}
+                            {errors.email && (
+                              <div className="invalid-feedback-custom">
+                                {errors.email}
+                              </div>
+                            )}
                           </div>
                         </div>
 
                         <div className="col-md-6">
                           <div className="form-group-custom">
-                            <label htmlFor="mobile" className="required-label">Mobile Number</label>
+                            <label htmlFor="mobile" className="required-label">
+                              Mobile Number
+                            </label>
                             <input
                               type="tel"
                               id="mobile"
@@ -439,11 +517,15 @@ const Contact = () => {
                               value={formData.mobile}
                               onChange={handleInputChange}
                               className={`form-control-custom ${errors.mobile ? "is-invalid" : ""}`}
-                              placeholder="e.g. +91 96555 96867"
+                              placeholder="e.g. +91 9876543210"
                               autoComplete="tel"
                               required
                             />
-                            {errors.mobile && <div className="invalid-feedback-custom">{errors.mobile}</div>}
+                            {errors.mobile && (
+                              <div className="invalid-feedback-custom">
+                                {errors.mobile}
+                              </div>
+                            )}
                           </div>
                         </div>
 
@@ -488,7 +570,9 @@ const Contact = () => {
                       <div className="row g-4 mb-4">
                         <div className="col-md-6">
                           <div className="form-group-custom">
-                            <label htmlFor="destination">Destination / Package</label>
+                            <label htmlFor="destination">
+                              Destination / Package
+                            </label>
                             <input
                               type="text"
                               id="destination"
@@ -511,24 +595,99 @@ const Contact = () => {
                               onChange={handleInputChange}
                               className="form-select-custom"
                             >
+                              <option value="Domestic">Select The Type</option>
                               <option value="Domestic">Domestic</option>
-                              <option value="International">International</option>
+                              <option value="International">
+                                International
+                              </option>
                             </select>
                           </div>
                         </div>
 
                         <div className="col-md-6">
                           <div className="form-group-custom">
-                            <label htmlFor="travelDate">Tentative Travel Date</label>
-                            <input
-                              type="date"
-                              id="travelDate"
-                              name="travelDate"
-                              min={new Date().toISOString().split("T")[0]}
-                              value={formData.travelDate}
-                              onChange={handleInputChange}
-                              className="form-control-custom"
-                            />
+                            <label htmlFor="travelDate">
+                              Tentative Travel Date
+                            </label>
+                            <div
+                              className="date-picker-container"
+                              onClick={() => {
+                                if (dateInputRef.current) {
+                                  if (
+                                    typeof dateInputRef.current.showPicker ===
+                                    "function"
+                                  ) {
+                                    dateInputRef.current.showPicker();
+                                  } else {
+                                    dateInputRef.current.focus();
+                                  }
+                                }
+                              }}
+                            >
+                              {/* Display text in dd/mm/yyyy */}
+                              <input
+                                type="text"
+                                id="travelDate"
+                                name="travelDateDisplay"
+                                readOnly
+                                placeholder="dd/mm/yyyy"
+                                value={
+                                  formData.travelDate
+                                    ? formData.travelDate
+                                        .split("-")
+                                        .reverse()
+                                        .join("/")
+                                    : ""
+                                }
+                                className="form-control-custom date-display-input"
+                              />
+
+                              {/* Actual date picker */}
+                              <input
+                                ref={dateInputRef}
+                                type="date"
+                                id="hiddenDateInput"
+                                name="travelDate"
+                                min={new Date().toISOString().split("T")[0]}
+                                value={formData.travelDate}
+                                onChange={handleInputChange}
+                                className="date-picker-hidden-native"
+                                tabIndex={-1}
+                                aria-hidden="true"
+                              />
+
+                              {/* Calendar SVG Button */}
+                              <button
+                                type="button"
+                                className="date-picker-calendar-btn"
+                                aria-label="Open Calendar"
+                                tabIndex={-1}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="18"
+                                  height="18"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="#0f2d52"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <rect
+                                    x="3"
+                                    y="4"
+                                    width="18"
+                                    height="18"
+                                    rx="2"
+                                    ry="2"
+                                  ></rect>
+                                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                              </button>
+                            </div>
                           </div>
                         </div>
 
@@ -549,7 +708,9 @@ const Contact = () => {
 
                         <div className="col-6 col-md-6">
                           <div className="form-group-custom">
-                            <label htmlFor="adults">Number of Adults (12+ yrs)</label>
+                            <label htmlFor="adults">
+                              Number of Adults (12+ yrs)
+                            </label>
                             <input
                               type="number"
                               id="adults"
@@ -564,7 +725,9 @@ const Contact = () => {
 
                         <div className="col-6 col-md-6">
                           <div className="form-group-custom">
-                            <label htmlFor="children">Number of Children (2-12 yrs)</label>
+                            <label htmlFor="children">
+                              Number of Children (2-12 yrs)
+                            </label>
                             <input
                               type="number"
                               id="children"
@@ -579,10 +742,13 @@ const Contact = () => {
 
                         <div className="col-12 mt-4">
                           <div className="form-group-custom">
-                            <label className="mb-2">Services Required (Select all that apply)</label>
+                            <label className="mb-2">
+                              Services Required (Select all that apply)
+                            </label>
                             <div className="services-chips-grid">
                               {servicesList.map((service, index) => {
-                                const isSelected = formData.services.includes(service);
+                                const isSelected =
+                                  formData.services.includes(service);
                                 return (
                                   <button
                                     type="button"
@@ -590,7 +756,12 @@ const Contact = () => {
                                     className={`service-chip-btn ${isSelected ? "active" : ""}`}
                                     onClick={() => handleServiceChange(service)}
                                   >
-                                    {isSelected && <Check size={14} className="me-1 stroke-3" />}
+                                    {isSelected && (
+                                      <Check
+                                        size={14}
+                                        className="me-1 stroke-3"
+                                      />
+                                    )}
                                     {service}
                                   </button>
                                 );
@@ -623,12 +794,21 @@ const Contact = () => {
                         >
                           {loading ? (
                             <>
-                              <Loader2 className="animate-spin me-2" size={18} /> Submitting...
+                              <Loader2
+                                className="animate-spin me-2"
+                                size={18}
+                              />{" "}
+                              Submitting...
                             </>
                           ) : (
                             <>
-                              {queryPackageName ? "Confirm Booking Enquiry" : "Get My Free Quote"}
-                              <ArrowRight className="ms-2 inline-block" size={18} />
+                              {queryPackageName
+                                ? "Confirm Booking Enquiry"
+                                : "Get My Free Quote"}
+                              <ArrowRight
+                                className="ms-2 inline-block"
+                                size={18}
+                              />
                             </>
                           )}
                         </button>
@@ -638,24 +818,58 @@ const Contact = () => {
                 ) : (
                   <div className="enquiry-success-container text-center py-5">
                     <div className="success-icon-wrapper mb-4">
-                      <CheckCircle2 size={80} className="text-gold stroke-2" style={{ color: "var(--trip-gold)" }} />
+                      <CheckCircle2
+                        size={80}
+                        className="text-gold stroke-2"
+                        style={{ color: "var(--trip-gold)" }}
+                      />
                     </div>
-                    <h2 className="text-trip mb-3">Enquiry Submitted Successfully!</h2>
+                    <h2 className="text-trip mb-3">
+                      Enquiry Submitted Successfully!
+                    </h2>
                     <p className="text-muted mb-4 max-w-lg mx-auto">
-                      Thank you, <strong className="text-trip">{formData.fullName}</strong>! We have received your enquiry for{" "}
-                      <strong className="text-trip">{formData.destination || "your destination"}</strong>. Our travel specialist team will review your requirements and reach out to you within 24 hours.
+                      Thank you,{" "}
+                      <strong className="text-trip">{formData.fullName}</strong>
+                      ! We have received your enquiry for{" "}
+                      <strong className="text-trip">
+                        {formData.destination || "your destination"}
+                      </strong>
+                      . Our travel specialist team will review your requirements
+                      and reach out to you within 24 hours.
                     </p>
 
                     <div className="summary-box p-4 rounded-4 bg-light text-start mb-4 border border-light-subtle">
-                      <h5 className="font-semibold text-trip mb-3 border-bottom pb-2">Enquiry Summary</h5>
+                      <h5 className="font-semibold text-trip mb-3 border-bottom pb-2">
+                        Enquiry Summary
+                      </h5>
                       <ul className="list-unstyled d-flex flex-column gap-2 small text-muted">
-                        <li><strong>Contact:</strong> {formData.mobile} | {formData.email}</li>
-                        <li><strong>Trip Type:</strong> {formData.travelType}</li>
-                        {formData.travelDate && <li><strong>Travel Date:</strong> {formData.travelDate}</li>}
-                        <li><strong>Travellers:</strong> {formData.adults} Adults {formData.children > 0 && `, ${formData.children} Children`}</li>
-                        {formData.budget && <li><strong>Budget:</strong> {formData.budget}</li>}
+                        <li>
+                          <strong>Contact:</strong> {formData.mobile} |{" "}
+                          {formData.email}
+                        </li>
+                        <li>
+                          <strong>Trip Type:</strong> {formData.travelType}
+                        </li>
+                        {formData.travelDate && (
+                          <li>
+                            <strong>Travel Date:</strong> {formData.travelDate}
+                          </li>
+                        )}
+                        <li>
+                          <strong>Travellers:</strong> {formData.adults} Adults{" "}
+                          {formData.children > 0 &&
+                            `, ${formData.children} Children`}
+                        </li>
+                        {formData.budget && (
+                          <li>
+                            <strong>Budget:</strong> {formData.budget}
+                          </li>
+                        )}
                         {formData.services.length > 0 && (
-                          <li><strong>Services:</strong> {formData.services.join(", ")}</li>
+                          <li>
+                            <strong>Services:</strong>{" "}
+                            {formData.services.join(", ")}
+                          </li>
                         )}
                       </ul>
                     </div>
@@ -665,7 +879,10 @@ const Contact = () => {
                       onClick={handleReset}
                       className="btn-trip-outline-reset px-4 py-2 mt-2"
                     >
-                      <RefreshCw size={16} className="me-2 inline-block align-middle" />
+                      <RefreshCw
+                        size={16}
+                        className="me-2 inline-block align-middle"
+                      />
                       Send Another Enquiry
                     </button>
                   </div>
@@ -676,24 +893,78 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Map Section */}
+      {/* Map Section with Hover Details Card & Get Directions Button */}
       <section className="map-section py-5 bg-sec">
         <div className="container">
           <div className="text-center mb-4">
             <h2 className="text-trip">Find Us</h2>
             <div className="horline mx-auto mb-2"></div>
-            <p className="text-muted">Registered Office Location on Google Maps</p>
+            <p className="text-muted">
+              Registered Office Location on Google Maps
+            </p>
           </div>
-          <div className="map-card-wrapper shadow rounded-4 overflow-hidden bg-white border border-light-subtle">
+
+          <div
+            className="map-card-wrapper position-relative shadow rounded-4 overflow-hidden bg-white border border-light-subtle"
+            style={{ minHeight: "480px" }}
+          >
+            {/* Custom Overlay Card - Placed at (0,0) with a curved bottom-right corner to hide Google's default 'Open in Maps' link */}
+            <div
+              className="map-floating-overlay-card position-absolute p-3 shadow-lg bg-white"
+              style={{
+                top: 0,
+                left: 0,
+                maxWidth: "350px",
+                zIndex: 10,
+                borderTop: "4px solid var(--trip-gold, #d4af37)",
+                borderBottomRightRadius: "16px",
+                borderRight: "1px solid #e2e8f0",
+                borderBottom: "1px solid #e2e8f0",
+              }}
+            >
+              <div className="d-flex align-items-center gap-2 mb-1">
+                <MapPin size={18} className="text-danger flex-shrink-0" />
+                <h6
+                  className="m-0 font-bold text-navy"
+                  style={{ fontSize: "0.95rem" }}
+                >
+                  {locationName}
+                </h6>
+              </div>
+              <p
+                className="text-muted small mb-3 ps-4"
+                style={{ whiteSpace: "pre-line", lineHeight: "1.4" }}
+              >
+                {contactInfo.address}
+              </p>
+
+              <a
+                href={googleDirectionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-sm w-100 d-flex align-items-center justify-content-center gap-2 fw-semibold text-white shadow-sm"
+                style={{
+                  backgroundColor: "#0f2d52",
+                  borderRadius: "6px",
+                  padding: "8px 12px",
+                }}
+              >
+                <Navigation size={15} />
+                Get Directions
+                <ExternalLink size={14} className="opacity-75 ms-1" />
+              </a>
+            </div>
+
+            {/* Embedded Google Map with pure coordinates to trigger the red pin */}
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.136894086968!2d80.19830567586548!3d13.090518712349348!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52640248a3cc0f%3A0xc07a78aa0e77d337!2sI%20Block%2035th%20St%2C%20Anna%20Nagar%2C%20Chennai%2C%20Tamil%20Nadu%20600040!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin"
+              src={`https://maps.google.com/maps?q=${officeLatitude},${officeLongitude}&hl=en&z=${mapZoom}&output=embed`}
               width="100%"
-              height="450"
-              style={{ border: 0 }}
+              height="480"
+              style={{ border: 0, display: "block" }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Tripist Holidays Google Maps Location"
+              title={`${locationName} Google Maps Location`}
             ></iframe>
           </div>
         </div>
