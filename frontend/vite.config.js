@@ -1,21 +1,15 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/tripist/',
   server: {
     proxy: {
-      '/api': {
-        target: 'http://localhost:5000', // change to your backend local port
+      '/api/countries': {
+        target: 'https://restcountries.com',
         changeOrigin: true,
-        secure: false,
+        rewrite: (path) => path.replace(/^\/api\/countries/, '/v3.1/all?fields=name'),
       },
-      // If your endpoints in api.js do not start with /api (e.g. /notice, /packages directly):
-      '/notice': 'http://localhost:5000',
-      '/destinations': 'http://localhost:5000',
-      '/packages': 'http://localhost:5000',
     },
   },
-})
+});

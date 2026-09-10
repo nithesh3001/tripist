@@ -1,18 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaMapMarkerAlt, FaArrowRight } from "react-icons/fa";
-
+import {
+  FaMapMarkerAlt,
+  FaArrowRight,
+} from "react-icons/fa";
+import banner from "../assets/hero2.jpg";
 import { api } from "../Admin/api";
 import "./Desti.css";
 
 const Destinations = () => {
   const [activeTab, setActiveTab] = useState("all");
+
   const [destinations, setDestinations] = useState([]);
+
   const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState("");
 
   // ============================================================
-  // FETCH DESTINATIONS
+  // HELPER - PARSE ARRAY
+  // ============================================================
+
+  const parseArrayData = (value) => {
+    if (!value) {
+      return [];
+    }
+
+    if (Array.isArray(value)) {
+      return value;
+    }
+
+    if (typeof value === "string") {
+      try {
+        const parsed = JSON.parse(value);
+
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+
+        return [value];
+      } catch {
+        return value
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
+      }
+    }
+
+    return [];
+  };
+
+  // ============================================================
+  // FETCH DESTINATIONS FROM BACKEND
   // ============================================================
 
   useEffect(() => {
@@ -21,14 +60,120 @@ const Destinations = () => {
         setLoading(true);
         setError("");
 
-        const response = await api.listDestinations();
+        console.log(
+          "================================="
+        );
+        console.log(
+          "FETCHING DESTINATIONS..."
+        );
+        console.log(
+          "================================="
+        );
 
-        console.log("Destination API Response:", response);
+        const response =
+          await api.listDestinations();
 
-        setDestinations(response?.destinations || []);
+        console.log(
+          "DESTINATION API RESPONSE:",
+          response
+        );
+
+        // ======================================================
+        // SUPPORT BOTH RESPONSE FORMATS
+        // ======================================================
+
+        let destinationList = [];
+
+        // Format 1:
+        // [
+        //   { id: 1, name: "India" }
+        // ]
+
+        if (Array.isArray(response)) {
+          destinationList = response;
+        }
+
+        // Format 2:
+        // {
+        //   success: true,
+        //   destinations: [...]
+        // }
+
+        else if (
+          Array.isArray(
+            response?.destinations
+          )
+        ) {
+          destinationList =
+            response.destinations;
+        }
+
+        // Format 3:
+        // {
+        //   data: {
+        //     destinations: [...]
+        //   }
+        // }
+
+        else if (
+          Array.isArray(
+            response?.data?.destinations
+          )
+        ) {
+          destinationList =
+            response.data.destinations;
+        }
+
+        // Format 4:
+        // {
+        //   data: [...]
+        // }
+
+        else if (
+          Array.isArray(response?.data)
+        ) {
+          destinationList =
+            response.data;
+        }
+
+        console.log(
+          "FINAL DESTINATION LIST:",
+          destinationList
+        );
+
+        console.log(
+          "DESTINATION COUNT:",
+          destinationList.length
+        );
+
+        setDestinations(
+          destinationList
+        );
+
+        if (
+          destinationList.length === 0
+        ) {
+          console.warn(
+            "No destinations returned from backend."
+          );
+        }
       } catch (err) {
-        console.error("Error fetching destinations:", err);
-        setError("Failed to load destinations.");
+        console.error(
+          "❌ ERROR FETCHING DESTINATIONS:",
+          err
+        );
+
+        console.error(
+          "Error message:",
+          err?.message
+        );
+
+        setDestinations([]);
+
+        setError(
+          err?.message ||
+          "Failed to load destinations."
+        );
       } finally {
         setLoading(false);
       }
@@ -42,17 +187,53 @@ const Destinations = () => {
   // ============================================================
 
   const getDestinationType = (item) => {
-    // If backend eventually provides destination_type,
-    // use it automatically.
-    if (item.destination_type) {
-      return item.destination_type.toLowerCase();
+    if (!item) {
+      return "international";
     }
 
-    // Temporary classification based on your current data
-    if (item.name?.toLowerCase() === "india") {
+    // If backend provides destination_type
+    if (item.destination_type) {
+      return String(
+        item.destination_type
+      ).toLowerCase();
+    }
+
+    // If backend provides type
+    if (item.type) {
+      return String(
+        item.type
+      ).toLowerCase();
+    }
+
+    // If backend provides category
+    if (item.destination_category) {
+      const category =
+        String(
+          item.destination_category
+        ).toLowerCase();
+
+      if (
+        category.includes("domestic")
+      ) {
+        return "domestic";
+      }
+
+      if (
+        category.includes("international")
+      ) {
+        return "international";
+      }
+    }
+
+    // India = domestic
+    if (
+      item.name?.toLowerCase() ===
+      "india"
+    ) {
       return "domestic";
     }
 
+    // Everything else = international
     return "international";
   };
 
@@ -60,13 +241,17 @@ const Destinations = () => {
   // FILTER DESTINATIONS
   // ============================================================
 
-  const filteredDestinations = destinations.filter((item) => {
-    if (activeTab === "all") {
-      return true;
-    }
+  const filteredDestinations =
+    destinations.filter((item) => {
+      if (activeTab === "all") {
+        return true;
+      }
 
-    return getDestinationType(item) === activeTab;
-  });
+      return (
+        getDestinationType(item) ===
+        activeTab
+      );
+    });
 
   // ============================================================
   // RENDER
@@ -79,7 +264,8 @@ const Destinations = () => {
           HERO
       ====================================================== */}
 
-      <section className="desti-hero">
+      <section className="desti-hero"  style={{ backgroundImage: `url(${banner})` }}>
+
         <div className="desti-overlay">
 
           <div className="container text-center text-md-start">
@@ -95,20 +281,24 @@ const Destinations = () => {
             </h1>
 
             <p className="hero-desc">
-              From backyard getaways to bucket-list adventures, browse
-              our full collection of curated escapes.
+              From backyard getaways to
+              bucket-list adventures, browse
+              our full collection of curated
+              escapes.
             </p>
 
             <p className="hero-subdesc">
-              Discover unique itineraries, overwater retreats, and
-              cultural journeys across India and around the globe.
+              Discover unique itineraries,
+              overwater retreats, and cultural
+              journeys across India and around
+              the globe.
             </p>
 
           </div>
 
         </div>
-      </section>
 
+      </section>
 
       {/* ======================================================
           DESTINATION SECTION
@@ -134,15 +324,18 @@ const Destinations = () => {
 
             <p
               className="text-muted mx-auto mb-0"
-              style={{ maxWidth: "650px" }}
+              style={{
+                maxWidth: "650px",
+              }}
             >
-              Discover handpicked destinations across India and
-              around the world. Explore destination details,
-              attractions and available travel packages.
+              Discover handpicked destinations
+              across India and around the world.
+              Explore destination details,
+              attractions and available travel
+              packages.
             </p>
 
           </div>
-
 
           {/* ==================================================
               FILTER BUTTONS
@@ -154,42 +347,50 @@ const Destinations = () => {
 
             <button
               type="button"
-              className={`custom-pill-btn px-4 py-2 rounded-pill ${
-                activeTab === "all" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("all")}
+              className={`custom-pill-btn px-4 py-2 rounded-pill ${activeTab === "all"
+                  ? "active"
+                  : ""
+                }`}
+              onClick={() =>
+                setActiveTab("all")
+              }
             >
               All Destinations
             </button>
-
 
             {/* DOMESTIC */}
 
             <button
               type="button"
-              className={`custom-pill-btn px-4 py-2 rounded-pill ${
-                activeTab === "domestic" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("domestic")}
+              className={`custom-pill-btn px-4 py-2 rounded-pill ${activeTab === "domestic"
+                  ? "active"
+                  : ""
+                }`}
+              onClick={() =>
+                setActiveTab("domestic")
+              }
             >
               Domestic
             </button>
-
 
             {/* INTERNATIONAL */}
 
             <button
               type="button"
-              className={`custom-pill-btn px-4 py-2 rounded-pill ${
-                activeTab === "international" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("international")}
+              className={`custom-pill-btn px-4 py-2 rounded-pill ${activeTab === "international"
+                  ? "active"
+                  : ""
+                }`}
+              onClick={() =>
+                setActiveTab(
+                  "international"
+                )
+              }
             >
               International
             </button>
 
           </div>
-
 
           {/* ==================================================
               LOADING
@@ -216,7 +417,6 @@ const Destinations = () => {
 
           )}
 
-
           {/* ==================================================
               ERROR
           ================================================== */}
@@ -225,14 +425,34 @@ const Destinations = () => {
 
             <div className="text-center py-5">
 
-              <p className="text-danger">
-                {error}
-              </p>
+              <div className="alert alert-danger mx-auto"
+                style={{
+                  maxWidth: "600px",
+                }}
+              >
+                <strong>
+                  Unable to load destinations
+                </strong>
+
+                <div className="small mt-2">
+                  {error}
+                </div>
+
+              </div>
+
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() =>
+                  window.location.reload()
+                }
+              >
+                Try Again
+              </button>
 
             </div>
 
           )}
-
 
           {/* ==================================================
               NO DESTINATIONS
@@ -240,7 +460,7 @@ const Destinations = () => {
 
           {!loading &&
             !error &&
-            filteredDestinations.length === 0 && (
+            destinations.length === 0 && (
 
               <div className="text-center py-5">
 
@@ -249,13 +469,43 @@ const Destinations = () => {
                 </h5>
 
                 <p className="text-muted">
-                  No destinations are available in this category.
+                  The backend returned no
+                  destination records.
                 </p>
+
+                <small className="text-muted">
+                  Open the browser console and
+                  check "DESTINATION API RESPONSE".
+                </small>
 
               </div>
 
             )}
 
+          {/* ==================================================
+              FILTERED EMPTY
+          ================================================== */}
+
+          {!loading &&
+            !error &&
+            destinations.length > 0 &&
+            filteredDestinations.length ===
+            0 && (
+
+              <div className="text-center py-5">
+
+                <h5>
+                  No destinations found.
+                </h5>
+
+                <p className="text-muted">
+                  No destinations are available
+                  in this category.
+                </p>
+
+              </div>
+
+            )}
 
           {/* ==================================================
               DESTINATION CARDS
@@ -263,200 +513,182 @@ const Destinations = () => {
 
           {!loading &&
             !error &&
-            filteredDestinations.length > 0 && (
+            filteredDestinations.length >
+            0 && (
 
               <div className="row g-4">
 
-                {filteredDestinations.map((item) => {
+                {filteredDestinations.map(
+                  (item) => {
 
-                  // --------------------------------------------
-                  // IMAGE
-                  // --------------------------------------------
+                    // ------------------------------------------
+                    // IMAGE
+                    // ------------------------------------------
 
-                  const image =
-                    item.hero_slider_images?.[0] ||
-                    "https://placehold.co/600x400?text=Destination";
+                    const imageArray =
+                      parseArrayData(
+                        item.hero_slider_images
+                      );
 
+                    const image =
+                      imageArray[0] ||
+                      item.hero_image ||
+                      item.image_url ||
+                      item.image ||
+                      "https://placehold.co/600x400?text=Destination";
 
-                  // --------------------------------------------
-                  // TYPE
-                  // --------------------------------------------
+                    // ------------------------------------------
+                    // TYPE
+                    // ------------------------------------------
 
-                  const destinationType =
-                    getDestinationType(item);
+                    const destinationType =
+                      getDestinationType(
+                        item
+                      );
 
+                    // ------------------------------------------
+                    // DISPLAY TYPE
+                    // ------------------------------------------
 
-                  // --------------------------------------------
-                  // DISPLAY TYPE
-                  // --------------------------------------------
+                    const displayType =
+                      destinationType ===
+                        "domestic"
+                        ? "DOMESTIC"
+                        : "INTERNATIONAL";
 
-                  const displayType =
-                    destinationType === "domestic"
-                      ? "DOMESTIC"
-                      : "INTERNATIONAL";
+                    // ------------------------------------------
+                    // DESCRIPTION
+                    // ------------------------------------------
 
+                    const description =
+                      item.about_text ||
+                      item.about ||
+                      item.description ||
+                      "Explore this beautiful destination and discover unforgettable travel experiences.";
 
-                  return (
+                    // ------------------------------------------
+                    // CARD
+                    // ------------------------------------------
 
-                    <div
-                      key={item.id}
-                      className="col-12 col-sm-6 col-md-4 col-lg-3"
-                    >
+                    return (
 
-                      <div className="card custom-dest-card border-0 h-100 shadow-sm">
+                      <div
+                        key={item.id}
+                        className="col-12 col-sm-6 col-md-4 col-lg-3"
+                      >
 
-                        {/* ==================================
-                            IMAGE
-                        ================================== */}
+                        <div className="card custom-dest-card border-0 h-100 shadow-sm">
 
-                        <div className="card-img-container">
+                          {/* ==================================
+                              IMAGE
+                          ================================== */}
 
-                          <img
-                            src={image}
-                            className="card-img"
-                            alt={item.name || "Destination"}
-                            referrerPolicy="no-referrer"
-                            onError={(e) => {
-                              e.currentTarget.src =
-                                "https://placehold.co/600x400?text=Destination";
-                            }}
-                          />
+                          <div className="card-img-container">
 
+                            <img
+                              src={image}
+                              className="card-img"
+                              alt={
+                                item.name ||
+                                "Destination"
+                              }
+                              referrerPolicy="no-referrer"
+                              onError={(e) => {
 
-                          {/* =================================
-                              TYPE BADGE
-                          ================================= */}
+                                e.currentTarget.onerror =
+                                  null;
 
-                          <span className="badge tag-badge-gold">
+                                e.currentTarget.src =
+                                  "https://placehold.co/600x400?text=Destination";
 
-                            {displayType}
+                              }}
+                            />
 
-                          </span>
+                            {/* =================================
+                                TYPE BADGE
+                            ================================= */}
 
+                            <span className="badge tag-badge-gold">
+                              {displayType}
+                            </span>
 
-                          {/* =================================
-                              IMAGE OVERLAY
-                          ================================= */}
+                            {/* =================================
+                                IMAGE OVERLAY
+                            ================================= */}
 
-                          <div className="card-img-overlay-bottom">
+                            <div className="card-img-overlay-bottom">
 
-                            {/* LOCATION */}
+                              {/* LOCATION */}
 
-                            <div className="location-pin">
+                              <div className="location-pin">
 
-                              <FaMapMarkerAlt />
+                                <FaMapMarkerAlt />
 
-                              <span>
-                                {item.capital ||
-                                  item.name ||
-                                  "Location"}
-                              </span>
-
-                            </div>
-
-
-                            {/* DESTINATION NAME */}
-
-                            <h3 className="overlay-card-title">
-
-                              {item.name ||
-                                "Destination"}
-
-                            </h3>
-
-                          </div>
-
-                        </div>
-
-
-                        {/* ==================================
-                            CARD BODY
-                        ================================== */}
-
-                        <div className="card-body d-flex flex-column p-3">
-
-
-                          {/* DESCRIPTION */}
-
-                          <p className="card-desc text-secondary">
-
-                            {item.about_text ||
-                              "Explore this beautiful destination and discover unforgettable travel experiences."}
-
-                          </p>
-
-
-                          {/* =================================
-                              BEST SEASON
-                          ================================= */}
-
-                          {/* {item.best_season_to_visit && (
-
-                            <div className="mb-3">
-
-                              <small className="text-uppercase text-muted fw-semibold">
-
-                                Best Time To Visit
-
-                              </small>
-
-                              <div className="fw-medium">
-
-                                {item.best_season_to_visit}
+                                <span>
+                                  {item.capital ||
+                                    item.name ||
+                                    "Location"}
+                                </span>
 
                               </div>
 
-                            </div>
+                              {/* DESTINATION NAME */}
 
-                          )} */}
+                              <h3 className="overlay-card-title">
 
+                                {item.name ||
+                                  "Destination"}
 
-                          {/* =================================
-                              CURRENCY
-                          ================================= */}
-
-                          {/* {item.currency && (
-
-                            <div className="mb-2">
-
-                              <small className="text-muted">
-
-                                Currency:{" "}
-
-                              </small>
-
-                              <span className="fw-medium">
-
-                                {item.currency}
-
-                              </span>
+                              </h3>
 
                             </div>
 
-                          )} */}
+                          </div>
 
+                          {/* ==================================
+                              CARD BODY
+                          ================================== */}
 
-                          {/* =================================
-                              BUTTON
-                          ================================= */}
+                          <div className="card-body d-flex flex-column p-3">
 
-                          <div className="mt-auto">
+                            {/* DESCRIPTION */}
 
-                            <hr className="my-3 text-muted opacity-25" />
-
-
-                            <Link
-                              to={`/destination-details?id=${item.id}`}
-                              className="explore-link text-decoration-none d-flex align-items-center justify-content-between"
+                            <p
+                              className="card-desc text-secondary"
+                              style={{
+                                display: "-webkit-box",
+                                WebkitLineClamp: 3,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                              }}
                             >
+                              {description}
+                            </p>
 
-                              <span>
-                                Explore Destination
-                              </span>
 
-                              <FaArrowRight />
 
-                            </Link>
+                            {/* =================================
+                                BUTTON
+                            ================================= */}
+
+                            <div className="mt-auto">
+
+                              <hr className="my-3 text-muted opacity-25" />
+
+                              <Link
+                                to={`/destination-details?id=${item.id}`}
+                                className="explore-link text-decoration-none d-flex align-items-center justify-content-between"
+                              >
+
+                                <span>
+                                  Explore Destination
+                                </span>
+
+                                <FaArrowRight />
+
+                              </Link>
+
+                            </div>
 
                           </div>
 
@@ -464,11 +696,9 @@ const Destinations = () => {
 
                       </div>
 
-                    </div>
-
-                  );
-
-                })}
+                    );
+                  }
+                )}
 
               </div>
 
