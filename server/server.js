@@ -17,13 +17,13 @@ const app = express();
 // ============================================================
 // CORS CONFIGURATION
 // ============================================================
-// const allowedOrigins = [
-//   "https://nithesh3001.github.io",
-//   "http://localhost:5173",
-//   "http://localhost:5174",
-//   "http://localhost:3000",
-//   "http://localhost:5000",
-// ];
+const allowedOrigins = [
+  "https://nithesh3001.github.io",
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3000",
+  "http://localhost:5000",
+];
 
 // If CLIENT_ORIGIN is set in Render, clean up any trailing slash and add it
 if (process.env.CLIENT_ORIGIN && process.env.CLIENT_ORIGIN !== "*") {
